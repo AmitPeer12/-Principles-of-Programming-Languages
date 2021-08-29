@@ -1,0 +1,83 @@
+(define list
+  (lambda(val)
+    (cons val '())
+  )
+)
+
+(define append 
+  (lambda(lst1 lst2)
+    (if (eq? lst1 '()) lst2
+    (cons(car lst1) (append(cdr lst1) lst2)))
+  )
+)
+
+(define reverse 
+  (lambda (lst)
+    (if (eq? lst '()) 
+      '()
+      (append (reverse (cdr lst)) (list (car lst)))
+    )
+  )
+)
+
+(define dup-lst
+  (lambda(val count)
+    (if (= count 0)
+      '()
+      (cons val (dup-lst val (- count 1)))
+    )
+  )
+)
+
+(define cyclic
+  (lambda(lst)
+    (append lst (list (car lst)))
+  )
+)
+
+(define duplicate-items
+   (lambda(lst dup-count)
+     (if (eq? lst '())
+      '()
+      (append (dup-lst (car lst) (car dup-count)) (duplicate-items (cdr lst) (cdr (cyclic dup-count))))
+    )
+  )
+)
+
+(define remove-from-list
+  (lambda (val lst)
+    (if (eq? lst '())
+      '()
+      (if (= (car lst) val)
+        (remove-from-list val (cdr lst))
+        (cons (car lst) (remove-from-list val (cdr lst)))
+      )
+    )
+  )
+)
+
+(define payment
+  (lambda (n coins-lst)
+    (if (< n 0)
+      0
+      (if (= n 0)
+        1
+        (if (eq? coins-lst '())
+          0
+          (+ (payment  (- n (car coins-lst))  (cdr coins-lst)) (payment n (remove-from-list (car coins-lst) coins-lst)))
+        )
+      )
+    )
+  )
+)
+
+(define compose-n
+  (lambda (f n)
+    (if (= n 1)
+      f
+      (lambda (x)
+        ((compose-n f (- n 1)) (f x))
+      )
+    )
+  )
+)
